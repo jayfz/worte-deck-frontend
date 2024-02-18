@@ -7,10 +7,10 @@ import { ThemeProvider } from 'styled-components';
 
 import { lightTheme } from '@/themes.ts';
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <ThemeProvider theme={lightTheme}>
-            <App />
-            <GlobalStyle />
-        </ThemeProvider>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <ThemeProvider theme={lightTheme}>
+      <App />
+      <GlobalStyle />
+    </ThemeProvider>
+  </React.StrictMode>,
 );
