@@ -1,13 +1,38 @@
-export const lightTheme = {
-  bg: 'var(--wd-shygray-24-light)',
-  primaryTextColor: 'var(--wd-boldgray-4-light)',
-  constrastTextColor: 'var(--wd-shygray-24-light)',
-  gameStarsColor: 'var(--wd-brightyellow-4-light)',
+export type ApplicationTheme = {
+  bg: string;
+  sectionBg: string;
+  primaryTextColor: string;
+  contrastTextColor: string;
+  gameStarsColor: string;
+  logoColor: string;
+  borderColor: string;
+  linkUnvisitedColor: string;
+  inputPlaceholderColor: string;
+  primaryButtonBgColor: string;
 };
 
-export const darkTheme = {
+export const lightTheme: ApplicationTheme = {
+  bg: 'var(--wd-shygray-24-light)',
+  sectionBg: 'white',
+  primaryTextColor: 'var(--wd-boldgray-4-light)',
+  contrastTextColor: 'var(--wd-shygray-24-light)',
+  gameStarsColor: 'var(--wd-brightyellow-4-light)',
+  logoColor: 'var(--wd-inkyblue-4-dark)',
+  borderColor: 'var(--wd-shygray-20-light)',
+  linkUnvisitedColor: 'var(--wd-strangepurple-4-light)',
+  inputPlaceholderColor: 'var(--wd-boldgray-4-80op-light)',
+  primaryButtonBgColor: 'var(--wd-inkyblue-4-dark)',
+};
+
+export const darkTheme: ApplicationTheme = {
   bg: 'var(--wd-inkyblue-4-dark)',
+  sectionBg: 'var(--wd-inkyblue-8-dark)',
   primaryTextColor: 'var(--wd-almostwhite-12-dark)',
-  constrastTextColor: 'var(--wd-inkyblue-4-dark)',
+  contrastTextColor: 'var(--wd-inkyblue-4-dark)',
   gameStarsColor: 'var(--wd-midnightyellow-4-dark)',
+  logoColor: '#F0F0F0',
+  borderColor: 'var(--wd-inkyblue-12-dark)',
+  linkUnvisitedColor: 'var(--wd-strangepurple-24-dark)',
+  inputPlaceholderColor: 'var(--wd-almostgray-24-dark)',
+  primaryButtonBgColor: 'var(--wd-almostwhite-12-dark)',
 };

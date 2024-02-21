@@ -2,15 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './preflight.css';
-import { GlobalStyle } from '@/styles.globals.tsx';
-import { ThemeProvider } from 'styled-components';
+import { ApplicationProvider } from '@/context/ApplicationContext.tsx';
 
-import { lightTheme } from '@/themes.ts';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider theme={lightTheme}>
+    <ApplicationProvider>
       <App />
-      <GlobalStyle />
-    </ThemeProvider>
+    </ApplicationProvider>
   </React.StrictMode>,
 );
