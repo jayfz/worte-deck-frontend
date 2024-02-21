@@ -1,13 +1,14 @@
 import LoginPage from '@/features/login/LoginPage';
 import ProtectedRoute from '@/routing/ProtectedRoute';
-import { Navigate, Outlet, createBrowserRouter } from 'react-router-dom';
+import AppLayout from '@/ui/AppLayout';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 
 export const applicationRouter = createBrowserRouter([
   {
     path: '/',
     element: (
       <ProtectedRoute>
-        <Outlet />
+        <AppLayout />
       </ProtectedRoute>
     ),
     children: [
