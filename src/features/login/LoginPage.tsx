@@ -5,7 +5,7 @@ import { Flex } from '@/ui/Flex';
 import LogoWithText from '@/ui/LogoWithText';
 import { GoogleLogin } from '@react-oauth/google';
 import { FormEventHandler, PropsWithChildren, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LoginPageContainer = styled(Flex.Column)`
@@ -79,7 +79,6 @@ function Divider({ children }: PropsWithChildren) {
 
 export default function LoginPage() {
   const { appUser } = useApplicationContext();
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -92,10 +91,7 @@ export default function LoginPage() {
     regularLoginQuery({ email, password });
   };
 
-  if (appUser) {
-    navigate('/app');
-    return null;
-  }
+  if (appUser) return <Navigate to="/app" replace />;
 
   return (
     <LoginPageContainer $gap="3rem">
