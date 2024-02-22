@@ -9,6 +9,10 @@ export type ApplicationTheme = {
   linkUnvisitedColor: string;
   inputPlaceholderColor: string;
   primaryButtonBgColor: string;
+  drawerLinkSelectedColor: string;
+  drawerBgColor: string;
+  drawerLinkColor: string;
+  drawerIconColor: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -22,6 +26,10 @@ export const lightTheme: ApplicationTheme = {
   linkUnvisitedColor: 'var(--wd-strangepurple-4-light)',
   inputPlaceholderColor: 'var(--wd-boldgray-4-80op-light)',
   primaryButtonBgColor: 'var(--wd-inkyblue-4-dark)',
+  drawerLinkSelectedColor: 'var(--wd-inkyblue-12-10op-dark)',
+  drawerBgColor: 'white',
+  drawerLinkColor: 'var(--wd-inkyblue-4-dark)',
+  drawerIconColor: 'var(--wd-inkyblue-4-80op-dark)',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -35,4 +43,8 @@ export const darkTheme: ApplicationTheme = {
   linkUnvisitedColor: 'var(--wd-strangepurple-24-dark)',
   inputPlaceholderColor: 'var(--wd-almostgray-24-dark)',
   primaryButtonBgColor: 'var(--wd-almostwhite-12-dark)',
+  drawerLinkSelectedColor: 'var(--wd-almostwhite-12-10op-dark)',
+  drawerBgColor: 'var(--wd-inkyblue-8-dark)',
+  drawerLinkColor: 'var(--wd-almostwhite-12-dark)',
+  drawerIconColor: 'var(--wd-almostwhite-12-80op-dark)',
 };

@@ -8,12 +8,15 @@ export const GlobalStyle = createGlobalStyle`
         font-style: normal;
 
         --wd-inkyblue-4-dark: rgba(29, 50, 70, 1);
+        --wd-inkyblue-4-80op-dark: rgba(29, 50, 70, 0.8);
         --wd-inkyblue-8-dark: rgba(50, 75, 99, 1);
         --wd-inkyblue-12-dark: rgba(83, 105, 128, 1);
         --wd-inkyblue-12-10op-dark: rgba(83, 105, 128, 0.1);
         --wd-inkyblue-12-60op-dark: rgba(83, 105, 128, 0.6);
         --wd-inkyblue-12-80op-dark: rgba(83, 105, 128, 0.8);
         --wd-almostwhite-12-dark: rgba(240, 240, 240, 1);
+        --wd-almostwhite-12-10op-dark:rgba(240, 240, 240, 0.1);
+        --wd-almostwhite-12-80op-dark:rgba(240, 240, 240, 0.8);
         --wd-midnightyellow-4-dark: rgba(255, 184, 0, 1);
         --wd-strangepurple-24-dark: rgba(170, 185, 255, 1);
         --wd-almostgray-24-dark: rgba(155, 177, 200, 1)
@@ -32,6 +35,10 @@ export const GlobalStyle = createGlobalStyle`
         background-color: ${(props) => props.theme.bg};
         color: ${(props) => props.theme.primaryTextColor};
 
+    }
+
+    button{
+        border: none;
     }
 
     @media only screen and (max-width: 768px){

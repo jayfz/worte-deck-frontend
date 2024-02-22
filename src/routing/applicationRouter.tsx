@@ -1,7 +1,8 @@
 import LoginPage from '@/features/login/LoginPage';
+import Logout from '@/features/login/Logout';
 import ProtectedRoute from '@/routing/ProtectedRoute';
 import AppLayout from '@/ui/AppLayout';
-import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { Link, Navigate, createBrowserRouter } from 'react-router-dom';
 
 export const applicationRouter = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/progress-overview',
-        element: <p>Progress overview page placeholder here</p>,
+        element: (
+          <p>
+            Progress overview page placeholder here <Link to="/app/manage-vocabulary/add-word">Add word</Link>
+          </p>
+        ),
       },
       {
         path: '/app/practice-session',
@@ -45,6 +50,10 @@ export const applicationRouter = createBrowserRouter([
         element: <p>word card page placeholder here</p>,
       },
       {
+        path: '/app/manage-vocabulary',
+        element: <p>manage vocabulary placeholder here</p>,
+      },
+      {
         path: '/app/manage-vocabulary/add-word',
         element: <p>add word page placeholder here</p>,
       },
@@ -57,6 +66,10 @@ export const applicationRouter = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/logout',
+    element: <Logout />,
   },
   {
     path: '/signup',

@@ -1,4 +1,5 @@
 import { useApplicationContext } from '@/context/useApplicationContext';
+import useDrawerContext from '@/context/useDrawerContext';
 import { Flex } from '@/ui/Flex';
 import { IconContext } from 'react-icons';
 import {
@@ -21,9 +22,7 @@ const MenuBarContainer = styled(Flex.Row)`
   }
 `;
 
-const MenuIconButton = styled.button`
-  border: none;
-`;
+const MenuIconButton = styled.button``;
 
 function BackMenuIcon() {
   const navigate = useNavigate();
@@ -37,8 +36,9 @@ function BackMenuIcon() {
 }
 
 function DrawerMenuIcon() {
+  const { openDrawer } = useDrawerContext();
   return (
-    <MenuIconButton>
+    <MenuIconButton onClick={openDrawer}>
       <IoMenu />
     </MenuIconButton>
   );
