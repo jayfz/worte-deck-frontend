@@ -5,6 +5,7 @@ import { Flex } from '@/ui/Flex';
 import LogoWithText from '@/ui/LogoWithText';
 import { GoogleLogin } from '@react-oauth/google';
 import { FormEventHandler, PropsWithChildren, useState } from 'react';
+import { IoChevronForward } from 'react-icons/io5';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -19,6 +20,7 @@ const LoginBody = styled(Flex.Column)`
   padding: 1rem;
   border: 2px solid ${(props) => props.theme.borderColor};
   border-radius: 0.5rem;
+  font-family: 'Inter', sans-serif;
 
   & h1 {
     font-size: 1.5rem;
@@ -27,6 +29,8 @@ const LoginBody = styled(Flex.Column)`
 
 const AppInternalLink = styled(Link)`
   color: ${(props) => props.theme.linkUnvisitedColor};
+  display: inline-flex;
+  align-items: center;
 `;
 
 const Input = styled.input`
@@ -100,7 +104,10 @@ export default function LoginPage() {
         <Flex.Column>
           <h1>Welcome to Worte Deck</h1>
           <p>
-            Don't have an account? <AppInternalLink to="/signup">Sign up</AppInternalLink>{' '}
+            Don't have an account?{' '}
+            <AppInternalLink to="/signup">
+              Sign up <IoChevronForward />
+            </AppInternalLink>{' '}
           </p>
         </Flex.Column>
 
