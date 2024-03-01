@@ -81,7 +81,7 @@ export default function MenuBar() {
 
   console.log(location);
   return (
-    <IconContext.Provider value={{ size: '1.5rem', color: theme.primaryTextColor }}>
+    <IconContext.Provider value={{ size: '1.5rem', color: theme.primaryTextColor, style: { strokeWidth: 9 } }}>
       <MenuBarContainer $gap="1rem">
         <BackMenuIcon />
         <ThemeSwitcherMenuIcon />

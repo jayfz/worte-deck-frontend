@@ -8,6 +8,7 @@ import { FormEventHandler, PropsWithChildren, useState } from 'react';
 import { IoChevronForward } from 'react-icons/io5';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from '@/ui/Button';
 
 const LoginPageContainer = styled(Flex.Column)`
   padding: 1.25rem;
@@ -39,15 +40,6 @@ const Input = styled.input`
   border: 2px solid ${(props) => props.theme.borderColor};
   border-radius: 0.5rem;
   padding: 0.625rem;
-`;
-
-const PrimaryButton = styled.button`
-  background-color: ${(props) => props.theme.primaryTextColor};
-  color: ${(props) => props.theme.bg};
-  padding: 0.75rem 0;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
 `;
 
 const DividerContainer = styled(Flex.Row)`
@@ -127,9 +119,9 @@ export default function LoginPage() {
             autoComplete="password"
             onChange={({ target }) => setPassword(target.value)}
           />
-          <PrimaryButton type="submit" disabled={isPendingGoogleLogin || isPendingRegularLogin}>
+          <Button $variant="primary" type="submit" disabled={isPendingGoogleLogin || isPendingRegularLogin}>
             Login
-          </PrimaryButton>
+          </Button>
         </Flex.Column>
         <AppInternalLink style={{ alignSelf: 'flex-end' }} to="/reset-password">
           Forgot your password?

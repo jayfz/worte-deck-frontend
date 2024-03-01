@@ -27,3 +27,47 @@ type ResponsePage = {
 export type PagedAppRestResponse<T> = AppRestResponse<T> & {
   page: ResponsePage;
 };
+export type WordType = 'NOUN' | 'ADJECTIVE' | 'VERB' | 'ADVERB' | 'COMMON_EXPRESSION';
+
+export type BaseWord = {
+  id: number;
+  word: string;
+  pronunciations: string[];
+  englishTranslations: string[];
+  recordingURLs: string[];
+  germanExample: string;
+  germanExampleRecordingURLs: string[];
+  englishExample: string;
+  isReady: boolean;
+  matches: string[];
+};
+export type NounGender = 'MASCULINE' | 'FEMENINE' | 'NEUTER';
+
+export type Noun = BaseWord & {
+  type: 'NOUN';
+  gender: NounGender;
+  plural: string;
+};
+
+export type Adjective = BaseWord & {
+  type: 'ADJECTIVE';
+  isComparable: boolean;
+  comparative: string;
+  superlative: string;
+};
+export type Verb = BaseWord & {
+  type: 'VERB';
+  isRegular: boolean;
+  isSeparable: boolean;
+  hasPrefix: boolean;
+};
+
+export type Adverb = BaseWord & {
+  type: 'ADVERB';
+};
+
+export type CommonExpression = BaseWord & {
+  type: 'COMMON_EXPRESSION';
+};
+
+export type Word = Noun | Adjective | Verb | Adverb | CommonExpression;

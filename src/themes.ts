@@ -13,6 +13,7 @@ export type ApplicationTheme = {
   drawerBgColor: string;
   drawerLinkColor: string;
   drawerIconColor: string;
+  gamePlayButtonColor: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -30,6 +31,7 @@ export const lightTheme: ApplicationTheme = {
   drawerBgColor: 'white',
   drawerLinkColor: 'var(--wd-inkyblue-4-dark)',
   drawerIconColor: 'var(--wd-inkyblue-4-80op-dark)',
+  gamePlayButtonColor: 'var(--wd-brightyellow-4-light)',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -47,4 +49,5 @@ export const darkTheme: ApplicationTheme = {
   drawerBgColor: 'var(--wd-inkyblue-8-dark)',
   drawerLinkColor: 'var(--wd-almostwhite-12-dark)',
   drawerIconColor: 'var(--wd-almostwhite-12-80op-dark)',
+  gamePlayButtonColor: 'var(--wd-almostwhite-12-dark)',
 };
