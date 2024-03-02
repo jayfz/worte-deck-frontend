@@ -1,7 +1,7 @@
 import { NounGender, Word } from '@/types/domainTypes';
 import { Flex } from '@/ui/Flex';
 import LogoWithoutText from '@/ui/LogoWithoutText';
-import React, { useState } from 'react';
+import React, { TouchEventHandler, useEffect, useRef, useState } from 'react';
 import { IoVolumeHighOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
@@ -9,11 +9,18 @@ type FlashCardProps = {
   word: Word;
 };
 
-const FlashCardContainer = styled(Flex.Column)`
+const FlashCardContainer = styled(Flex.Column).attrs<{ $movementFactor: number }>((props) => props)`
   aspect-ratio: 2/3;
+  position: relative;
+  z-index: 10;
   width: 80svw;
   background-color: ${(props) => props.theme.sectionBg};
   border: ${(props) => `2px solid ${props.theme.borderColor}`};
+  transform-origin: ${(props) => (props.$movementFactor > 0 ? 'right bottom' : 'left bottom')};
+  transform: rotate(clamp(-18deg, ${(props) => props.$movementFactor * 16}deg, 18deg))
+    translateX(${(props) => props.$movementFactor * 25}rem);
+
+  /* transition: transform 0.5s linear; */
   max-width: 640px;
   border-radius: 1rem;
   padding: 0.75rem;
@@ -38,10 +45,33 @@ const StyledPlayButton = styled.button`
   }
 `;
 export function PlayButton(props: PlayButtonProps) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const onPlayAudio = () => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+    audioElement.paused ? audioElement.play() : audioElement.pause();
+  };
+
   return (
-    <StyledPlayButton>
-      <IoVolumeHighOutline size={'1.5rem'} />
-    </StyledPlayButton>
+    <>
+      <audio ref={audioRef}>
+        {props.audioSource.map((sourceURL) => {
+          if (sourceURL.endsWith('.mp3')) {
+            return <source key={sourceURL} src={sourceURL} type="audio/mpeg" />;
+          }
+
+          if (sourceURL.endsWith('.ogg')) {
+            return <source key={sourceURL} src={sourceURL} type="audio/ogg" />;
+          }
+
+          return null;
+        })}
+      </audio>
+      <StyledPlayButton onClick={onPlayAudio}>
+        <IoVolumeHighOutline size={'1.5rem'} />
+      </StyledPlayButton>
+    </>
   );
 }
 
@@ -70,14 +100,6 @@ const AlwaysVisibleWordInfo = styled(Flex.Column)`
   margin: auto 0;
   align-items: center;
   gap: 0.875rem;
-  & > p:nth-child(2) {
-    font-size: 1.5rem;
-  }
-
-  & > p:nth-child(3) {
-    font-weight: 400;
-    font-family: 'Roboto Condensed', sans-serif;
-  }
 `;
 
 const EnglishTranslations = styled(Flex.Column)`
@@ -147,35 +169,104 @@ const RevealedWordInfo = styled(Flex.Column)`
   font-size: 0.875rem;
   gap: 0.5rem;
 `;
+
+const GermanWord = styled.p`
+  font-size: 1.5rem;
+`;
+
+const IpaPronunciation = styled.p`
+  font-weight: 400;
+  font-family: 'Roboto Condensed', sans-serif;
+`;
+
+const NounPlural = styled.p``;
 export default function FlashCard({ word }: FlashCardProps) {
   const [revealedCard, setReveleavedCard] = useState(true);
+  const [movementFactor, setMovementFactor] = useState(0);
+  const [cardXCoordinate, setCardXCoordinate] = useState(0);
 
   const guessWord = word.type === 'NOUN' ? `${getDefiniteArticleForGender(word.gender)} ${word.word}` : word.word;
 
+  const flashCardRef = useRef<HTMLDivElement | null>(null);
+
+  const updateMovementFactor = (moveClientX: number) => {
+    if (cardXCoordinate == 0 || moveClientX == 0) {
+      setCardXCoordinate(moveClientX);
+      setMovementFactor(0);
+      return;
+    }
+    setMovementFactor((moveClientX - cardXCoordinate) / document.documentElement.clientWidth);
+  };
+
+  const onTouchStart: TouchEventHandler<HTMLDivElement> = (event) => {
+    // event.preventDefault(); prevents mouseevents
+    // setCardXCoordinate(event.changedTouches.item(0).clientX);
+    console.log('touch start fired', event.changedTouches.item(0).clientX);
+  };
+
+  const onTouchEnd: TouchEventHandler<HTMLDivElement> = (event) => {
+    // event.preventDefault(); prevents mouseevents
+    // console.log('touch end fired', event.target);
+    updateMovementFactor(0);
+  };
+  const onTouchCancel: TouchEventHandler<HTMLDivElement> = (event) => {
+    // event.preventDefault();
+    // console.log('touch cancel fired', event.target);
+    // setCardXCoordinate(0);
+    updateMovementFactor(0);
+  };
+  const onTouchMove: TouchEventHandler<HTMLDivElement> = (event) => {
+    // event.preventDefault();
+    // console.log('touch move fired', event.currentTarget);
+    console.log(event.changedTouches.item(0));
+    const { clientX, clientY } = event.changedTouches.item(0);
+    updateMovementFactor(clientX);
+    console.log(cardXCoordinate, clientX, movementFactor);
+  };
+
+  useEffect(() => {
+    // console.log(`${cardXCoordinate} cardxcoordinate`);
+  });
+
   return (
-    <FlashCardContainer>
+    <FlashCardContainer
+      $movementFactor={movementFactor}
+      ref={flashCardRef}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchCancel}
+      onTouchMove={onTouchMove}
+    >
       <Corner>
         <LogoWithoutText />
       </Corner>
       <FlashCard.Body>
         <AlwaysVisibleWordInfo>
-          <PlayButton audioSource={word.recordingURLs} /> <p>{guessWord}</p>
-          <p>[{word.pronunciations[0] ?? 'unavailable'}]</p> {word.type === 'NOUN' ? <p>Die {word.plural}</p> : null}
-          {revealedCard && (
-            <EnglishTranslations>
-              {word.englishTranslations.slice(0, 3).map((translation, key) => (
-                <p key={key}>{translation}</p>
-              ))}
-            </EnglishTranslations>
-          )}
+          <PlayButton audioSource={word.recordingURLs} />
+          <GermanWord>{guessWord}</GermanWord>
+          <IpaPronunciation>[{word.pronunciations[0] ?? 'unavailable'}]</IpaPronunciation>
+
+          <>{word.type === 'NOUN' && <NounPlural>Die {word.plural}</NounPlural>}</>
+
+          <>
+            {revealedCard && (
+              <EnglishTranslations>
+                {word.englishTranslations.slice(0, 3).map((translation, key) => (
+                  <p key={key}>{translation}</p>
+                ))}
+              </EnglishTranslations>
+            )}
+          </>
         </AlwaysVisibleWordInfo>
-        {revealedCard ? (
-          <RevealedWordInfo>
-            <HighlightedGermanExample word={word} /> <p>{word.englishExample}</p>
-          </RevealedWordInfo>
-        ) : (
-          <ExtraWordInfo word={word} />
-        )}
+        <>
+          {revealedCard ? (
+            <RevealedWordInfo>
+              <HighlightedGermanExample word={word} /> <p>{word.englishExample}</p>
+            </RevealedWordInfo>
+          ) : (
+            <ExtraWordInfo word={word} />
+          )}
+        </>
       </FlashCard.Body>
     </FlashCardContainer>
   );

@@ -11,6 +11,7 @@ const PracticeSessionContainer = styled(Flex.Column)`
   padding: 1.25rem;
   margin: auto 0;
   align-items: center;
+  overflow: hidden;
 
   & > p,
   & > button {
