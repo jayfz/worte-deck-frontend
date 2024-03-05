@@ -24,6 +24,10 @@ type ResponsePage = {
   order: 'string';
 };
 
+export type CreatedPracticeSession = {
+  practiceSessionId: number;
+};
+
 export type PagedAppRestResponse<T> = AppRestResponse<T> & {
   page: ResponsePage;
 };

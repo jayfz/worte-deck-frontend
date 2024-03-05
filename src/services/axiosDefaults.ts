@@ -15,7 +15,7 @@ async function artificialNetworkDelay(config: InternalAxiosRequestConfig) {
 axios.interceptors.request.use(artificialNetworkDelay);
 
 export function applyBearerToken(token: string) {
-  axios.defaults.headers.common['Authorization'] = `Bearer: ${token}`;
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
 export function clearBearerToken() {

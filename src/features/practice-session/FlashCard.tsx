@@ -1,29 +1,34 @@
+import useGameContext from '@/features/practice-session/useGameContext';
 import { NounGender, Word } from '@/types/domainTypes';
 import { Flex } from '@/ui/Flex';
 import LogoWithoutText from '@/ui/LogoWithoutText';
-import React, { TouchEventHandler, useEffect, useRef, useState } from 'react';
+import { useIntersection } from '@mantine/hooks';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IoVolumeHighOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
-type FlashCardProps = {
-  word: Word;
-};
-
-const FlashCardContainer = styled(Flex.Column).attrs<{ $movementFactor: number }>((props) => props)`
+const FlashCardContainer = styled(Flex.Column).attrs<{
+  $movementFactor: number;
+  $isAtFront: boolean;
+  $animatingBack: boolean;
+}>(({ $movementFactor }) => ({
+  style: {
+    transformOrigin: $movementFactor > 0 ? 'right bottom' : 'left bottom',
+    transform: `rotate(clamp(-19deg, ${$movementFactor * 16}deg, 18deg)) translateX(${$movementFactor * 25}rem)`,
+  },
+}))`
   aspect-ratio: 2/3;
   position: relative;
   z-index: 10;
   width: 80svw;
   background-color: ${(props) => props.theme.sectionBg};
   border: ${(props) => `2px solid ${props.theme.borderColor}`};
-  transform-origin: ${(props) => (props.$movementFactor > 0 ? 'right bottom' : 'left bottom')};
-  transform: rotate(clamp(-18deg, ${(props) => props.$movementFactor * 16}deg, 18deg))
-    translateX(${(props) => props.$movementFactor * 25}rem);
-
-  /* transition: transform 0.5s linear; */
   max-width: 640px;
   border-radius: 1rem;
   padding: 0.75rem;
+  position: ${(props) => (props.$isAtFront ? 'relative' : 'absolute')};
+  transition: ${(props) => (props.$animatingBack ? 'transform 0.1s ease' : 'none')};
 `;
 
 const Corner = styled.div`
@@ -44,6 +49,7 @@ const StyledPlayButton = styled.button`
     color: ${(props) => props.theme.sectionBg};
   }
 `;
+
 export function PlayButton(props: PlayButtonProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -74,12 +80,6 @@ export function PlayButton(props: PlayButtonProps) {
     </>
   );
 }
-
-FlashCard.Body = styled(Flex.Column)`
-  align-items: center;
-  height: 100%;
-  padding: 0.875rem 0;
-`;
 
 function getDefiniteArticleForGender(gender: NounGender) {
   switch (gender) {
@@ -179,68 +179,159 @@ const IpaPronunciation = styled.p`
   font-family: 'Roboto Condensed', sans-serif;
 `;
 
+const FlashCardBaseBody = styled(Flex.Column)``;
 const NounPlural = styled.p``;
-export default function FlashCard({ word }: FlashCardProps) {
+
+const LoadingCardContainer = styled(Flex.Column)`
+  height: -webkit-fill-available;
+  height: -moz-available;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 1.5rem;
+  font-weight: 600;
+  flex: 1;
+
+  & > svg {
+    color: ${(props) => props.theme.gameStarsColor};
+    animation: rotation 1s infinite linear;
+  }
+
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+function LoadingCard() {
+  return (
+    <LoadingCardContainer $gap="0.75rem">
+      <AiOutlineLoading3Quarters size={'2rem'} />
+      <p>Loading...</p>
+    </LoadingCardContainer>
+  );
+}
+
+type FlashCardProps = {
+  isAtFront: boolean;
+};
+
+type CardAnimationStatus = 'NOT_STARTED' | 'STARTED' | 'FINISHED';
+
+export default function FlashCard({ isAtFront }: FlashCardProps) {
+  const { currentWord, nextWord, recordMove, isFetchingWord } = useGameContext();
+
+  const word = isAtFront ? currentWord : nextWord;
+
   const [revealedCard, setReveleavedCard] = useState(true);
   const [movementFactor, setMovementFactor] = useState(0);
-  const [cardXCoordinate, setCardXCoordinate] = useState(0);
+  const [cardXCoordinate, setCardXCoordinate] = useState<number | null>(null);
+  const [userSelectionMade, setUserSelectionMade] = useState(false);
 
-  const guessWord = word.type === 'NOUN' ? `${getDefiniteArticleForGender(word.gender)} ${word.word}` : word.word;
+  const [animatingBack, setAnimatingBack] = useState<CardAnimationStatus>('NOT_STARTED');
 
-  const flashCardRef = useRef<HTMLDivElement | null>(null);
+  const { ref, entry } = useIntersection({
+    root: null,
+    threshold: 1,
+  });
+
+  const myFlashCardRef = useRef<HTMLDivElement | null>(null);
+  useImperativeHandle(ref, () => myFlashCardRef.current as HTMLDivElement);
+
+  /* const guessWord =
+    isFetchingWord || !isAtFront
+      ? 'pendingword'
+      : word.type === 'NOUN'
+        ? `${getDefiniteArticleForGender(word.gender)} ${word.word}`
+        : word.word;
+ */
+  const guessWord = word
+    ? word.type === 'NOUN'
+      ? `${getDefiniteArticleForGender(word.gender)} ${word.word}`
+      : word.word
+    : '';
 
   const updateMovementFactor = (moveClientX: number) => {
-    if (cardXCoordinate == 0 || moveClientX == 0) {
-      setCardXCoordinate(moveClientX);
-      setMovementFactor(0);
-      return;
-    }
-    setMovementFactor((moveClientX - cardXCoordinate) / document.documentElement.clientWidth);
+    setMovementFactor((moveClientX - (cardXCoordinate ?? moveClientX)) / document.documentElement.clientWidth);
   };
 
-  const onTouchStart: TouchEventHandler<HTMLDivElement> = (event) => {
-    // event.preventDefault(); prevents mouseevents
-    // setCardXCoordinate(event.changedTouches.item(0).clientX);
-    console.log('touch start fired', event.changedTouches.item(0).clientX);
+  const resetMovementFactor = () => {
+    setCardXCoordinate(null);
+    setMovementFactor(0);
   };
 
-  const onTouchEnd: TouchEventHandler<HTMLDivElement> = (event) => {
-    // event.preventDefault(); prevents mouseevents
-    // console.log('touch end fired', event.target);
-    updateMovementFactor(0);
+  const onTouchStart: React.TouchEventHandler<HTMLDivElement> = (event) => {
+    console.log('touch start fired', event.target);
+    const { clientX } = event.changedTouches.item(0);
+    setCardXCoordinate(clientX);
   };
-  const onTouchCancel: TouchEventHandler<HTMLDivElement> = (event) => {
-    // event.preventDefault();
-    // console.log('touch cancel fired', event.target);
-    // setCardXCoordinate(0);
-    updateMovementFactor(0);
+
+  const onTouchEnd: React.TouchEventHandler<HTMLDivElement> = (event) => {
+    resetMovementFactor();
+    setAnimatingBack('STARTED');
   };
-  const onTouchMove: TouchEventHandler<HTMLDivElement> = (event) => {
-    // event.preventDefault();
-    // console.log('touch move fired', event.currentTarget);
-    console.log(event.changedTouches.item(0));
-    const { clientX, clientY } = event.changedTouches.item(0);
+  const onTouchCancel: React.TouchEventHandler<HTMLDivElement> = (event) => {
+    console.log('touch cancel fired', event.target);
+    resetMovementFactor();
+    setAnimatingBack('STARTED');
+  };
+
+  const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (event) => {
+    const { clientX } = event.changedTouches.item(0);
     updateMovementFactor(clientX);
-    console.log(cardXCoordinate, clientX, movementFactor);
   };
 
   useEffect(() => {
-    // console.log(`${cardXCoordinate} cardxcoordinate`);
-  });
+    console.log('intersection ratio', entry?.intersectionRatio, cardXCoordinate);
+    if (entry?.intersectionRatio && entry.intersectionRatio < 0.35) {
+      // setUserSelectionMade(true);
+      recordMove({
+        wordId: word.id,
+        decision: movementFactor < 0 ? 'LEFT' : 'RIGHT',
+      });
+      resetMovementFactor();
+    }
+  }, [entry?.intersectionRatio, recordMove, movementFactor, word, cardXCoordinate]);
 
-  return (
+  useEffect(() => {
+    if (animatingBack === 'STARTED') {
+      const timeout = setTimeout(() => setAnimatingBack('NOT_STARTED'), 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [animatingBack]);
+
+  if (userSelectionMade) {
+    return <p>You have selected {movementFactor < 0 ? 'left' : 'right'}. Looking up next card..</p>;
+  }
+
+  /* return (
+    <FlashCardContainer $movementFactor={0} $isAtFront={isAtFront}>
+      <Corner>
+        <LogoWithoutText />
+      </Corner>
+      <LoadingCard />
+    </FlashCardContainer>
+  ); */
+
+  return !isFetchingWord && word ? (
     <FlashCardContainer
+      $isAtFront={isAtFront}
+      $animatingBack={animatingBack === 'STARTED'}
+      ref={movementFactor != 0 && isAtFront ? myFlashCardRef : undefined}
       $movementFactor={movementFactor}
-      ref={flashCardRef}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      onTouchCancel={onTouchCancel}
-      onTouchMove={onTouchMove}
+      onTouchStart={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchStart : undefined}
+      onTouchEnd={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchEnd : undefined}
+      onTouchCancel={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchCancel : undefined}
+      onTouchMove={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchMove : undefined}
     >
       <Corner>
         <LogoWithoutText />
       </Corner>
-      <FlashCard.Body>
+      <FlashCardBaseBody>
         <AlwaysVisibleWordInfo>
           <PlayButton audioSource={word.recordingURLs} />
           <GermanWord>{guessWord}</GermanWord>
@@ -267,7 +358,14 @@ export default function FlashCard({ word }: FlashCardProps) {
             <ExtraWordInfo word={word} />
           )}
         </>
-      </FlashCard.Body>
+      </FlashCardBaseBody>
+    </FlashCardContainer>
+  ) : (
+    <FlashCardContainer $movementFactor={0} $isAtFront={isAtFront}>
+      <Corner>
+        <LogoWithoutText />
+      </Corner>
+      <LoadingCard />
     </FlashCardContainer>
   );
 }

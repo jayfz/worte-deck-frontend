@@ -1,14 +1,16 @@
 import FlashCard from '@/features/practice-session/FlashCard';
+import { GameContextProvider } from '@/features/practice-session/GameContext';
 import GameProgressBar from '@/features/practice-session/GameProgressBar';
 import GameScore from '@/features/practice-session/GameScore';
 import GameTimer from '@/features/practice-session/GameTimer';
-import { Noun } from '@/types/domainTypes';
+import useCreatePracticeSession from '@/features/practice-session/useCreatePracticeSession';
+import useGameContext from '@/features/practice-session/useGameContext';
 import { Button } from '@/ui/Button';
 import { Flex } from '@/ui/Flex';
-import { useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 const PracticeSessionContainer = styled(Flex.Column)`
-  padding: 1.25rem;
+  padding: 0 1.25rem;
   margin: auto 0;
   align-items: center;
   overflow: hidden;
@@ -21,31 +23,40 @@ const PracticeSessionContainer = styled(Flex.Column)`
   }
 `;
 
-const testWord: Noun = {
-  id: 15,
-  word: 'Klärschlamm',
-  type: 'NOUN',
-  pronunciations: [],
-  englishTranslations: ['sludge', 'sewage sludge', 'effluent sludge'],
-  recordingURLs: [
-    'https://commons.wikimedia.org/wiki/Special:FilePath/De-Klärschlamm.ogg',
-    'https://upload.wikimedia.org/wikipedia/commons/transcoded/7/7e/De-Klärschlamm.ogg/De-Klärschlamm.ogg.mp3',
-  ],
-  germanExample: 'Bei der Reinigung von Abwässern entsteht Klärschlamm',
-  germanExampleRecordingURLs: ['none added yet'],
-  englishExample: 'Sewage sludge is created when wastewater is cleaned.',
-  gender: 'MASCULINE',
-  plural: 'Klärschlamme',
-  isReady: true,
-  matches: ['Klärschlamm'],
-};
+const DeckContainer = styled.div`
+  position: relative;
+`;
+
+function Deck() {
+  const { currentWord, nextWord } = useGameContext();
+
+  return (
+    <DeckContainer>
+      <FlashCard isAtFront={false} key={nextWord?.id ?? '-1'} />
+      <FlashCard isAtFront={true} key={currentWord?.id ?? '-2'} />
+    </DeckContainer>
+  );
+}
 
 export default function PracticeSessionPage() {
-  const [gameStarted, setGameStarted] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const { createPracticeSessionQuery, isCreatingPracticeSession, practiceSessionId } = useCreatePracticeSession();
 
   const onYesClickHandler = () => {
-    setGameStarted(true);
+    createPracticeSessionQuery();
   };
+
+  useEffect(() => {
+    if (practiceSessionId) {
+      setGameStarted(true);
+    }
+  }, [practiceSessionId]);
+
+  if (isCreatingPracticeSession) {
+    <PracticeSessionContainer>
+      <p>Shuffling cards...</p>
+    </PracticeSessionContainer>;
+  }
 
   if (!gameStarted) {
     return (
@@ -56,14 +67,16 @@ export default function PracticeSessionPage() {
         </Button>
       </PracticeSessionContainer>
     );
-  } else {
+  } else if (gameStarted && practiceSessionId) {
     return (
-      <PracticeSessionContainer $gap="1rem">
-        <GameScore score={4.75} />
-        <FlashCard word={testWord} />
-        <GameProgressBar completed={70} />
-        <GameTimer />
-      </PracticeSessionContainer>
+      <GameContextProvider practiceSessionId={practiceSessionId}>
+        <PracticeSessionContainer $gap="1rem">
+          <GameScore />
+          <Deck />
+          <GameProgressBar />
+          <GameTimer />
+        </PracticeSessionContainer>
+      </GameContextProvider>
     );
   }
 }

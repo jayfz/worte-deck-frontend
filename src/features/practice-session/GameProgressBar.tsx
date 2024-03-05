@@ -1,8 +1,5 @@
+import useGameContext from '@/features/practice-session/useGameContext';
 import styled from 'styled-components';
-
-type GameProgressBar = {
-  completed: number;
-};
 
 const ProgressBarContainer = styled.div`
   height: 2rem;
@@ -23,10 +20,11 @@ const ProgressBar = styled.div<{ $completed: number }>`
   width: 100%;
   transform: ${(props) => `translate(calc(${props.$completed}% - 100%)) scaleY(1.1)`};
 `;
-export default function GameProgressBar(props: GameProgressBar) {
+export default function GameProgressBar() {
+  const { completed } = useGameContext();
   return (
     <ProgressBarContainer>
-      <ProgressBar $completed={props.completed} />
+      <ProgressBar $completed={completed} />
     </ProgressBarContainer>
   );
 }

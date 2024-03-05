@@ -1,17 +1,17 @@
+import useGameContext from '@/features/practice-session/useGameContext';
 import { Flex } from '@/ui/Flex';
 import React from 'react';
 import { IconContext } from 'react-icons';
 import { IoStar, IoStarHalfOutline, IoStarOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
-type GameScoreProps = {
-  score: number;
-};
-
 const GameScoreContainer = styled(Flex.Row)`
   color: ${(props) => props.theme.gameStarsColor};
 `;
-export default function GameScore({ score }: GameScoreProps) {
+export default function GameScore() {
+  const { score } = useGameContext();
+
+  console.log('this is the score', score);
   const starRow = [];
 
   for (let i = 1; i <= 5; i += 1) {
