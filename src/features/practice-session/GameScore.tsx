@@ -11,7 +11,6 @@ const GameScoreContainer = styled(Flex.Row)`
 export default function GameScore() {
   const { score } = useGameContext();
 
-  console.log('this is the score', score);
   const starRow = [];
 
   for (let i = 1; i <= 5; i += 1) {

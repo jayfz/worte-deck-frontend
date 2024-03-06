@@ -1,3 +1,5 @@
+import useCardAnimation from '@/features/practice-session/useCardAnimation';
+import useCardSwipeResult from '@/features/practice-session/useCardSwipeResult';
 import useGameContext from '@/features/practice-session/useGameContext';
 import { NounGender, Word } from '@/types/domainTypes';
 import { Flex } from '@/ui/Flex';
@@ -9,15 +11,8 @@ import { IoVolumeHighOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
 const FlashCardContainer = styled(Flex.Column).attrs<{
-  $movementFactor: number;
   $isAtFront: boolean;
-  $animatingBack: boolean;
-}>(({ $movementFactor }) => ({
-  style: {
-    transformOrigin: $movementFactor > 0 ? 'right bottom' : 'left bottom',
-    transform: `rotate(clamp(-19deg, ${$movementFactor * 16}deg, 18deg)) translateX(${$movementFactor * 25}rem)`,
-  },
-}))`
+}>((props) => props)`
   aspect-ratio: 2/3;
   position: relative;
   z-index: 10;
@@ -28,7 +23,6 @@ const FlashCardContainer = styled(Flex.Column).attrs<{
   border-radius: 1rem;
   padding: 0.75rem;
   position: ${(props) => (props.$isAtFront ? 'relative' : 'absolute')};
-  transition: ${(props) => (props.$animatingBack ? 'transform 0.1s ease' : 'none')};
 `;
 
 const Corner = styled.div`
@@ -220,114 +214,35 @@ type FlashCardProps = {
   isAtFront: boolean;
 };
 
-type CardAnimationStatus = 'NOT_STARTED' | 'STARTED' | 'FINISHED';
-
 export default function FlashCard({ isAtFront }: FlashCardProps) {
   const { currentWord, nextWord, recordMove, isFetchingWord } = useGameContext();
 
   const word = isAtFront ? currentWord : nextWord;
 
-  const [revealedCard, setReveleavedCard] = useState(true);
-  const [movementFactor, setMovementFactor] = useState(0);
-  const [cardXCoordinate, setCardXCoordinate] = useState<number | null>(null);
-  const [userSelectionMade, setUserSelectionMade] = useState(false);
-
-  const [animatingBack, setAnimatingBack] = useState<CardAnimationStatus>('NOT_STARTED');
-
-  const { ref, entry } = useIntersection({
-    root: null,
-    threshold: 1,
-  });
+  const [revealedCard, setReveleavedCard] = useState(false);
 
   const myFlashCardRef = useRef<HTMLDivElement | null>(null);
-  useImperativeHandle(ref, () => myFlashCardRef.current as HTMLDivElement);
-
-  /* const guessWord =
-    isFetchingWord || !isAtFront
-      ? 'pendingword'
-      : word.type === 'NOUN'
-        ? `${getDefiniteArticleForGender(word.gender)} ${word.word}`
-        : word.word;
- */
   const guessWord = word
     ? word.type === 'NOUN'
       ? `${getDefiniteArticleForGender(word.gender)} ${word.word}`
       : word.word
     : '';
 
-  const updateMovementFactor = (moveClientX: number) => {
-    setMovementFactor((moveClientX - (cardXCoordinate ?? moveClientX)) / document.documentElement.clientWidth);
-  };
-
-  const resetMovementFactor = () => {
-    setCardXCoordinate(null);
-    setMovementFactor(0);
-  };
-
-  const onTouchStart: React.TouchEventHandler<HTMLDivElement> = (event) => {
-    console.log('touch start fired', event.target);
-    const { clientX } = event.changedTouches.item(0);
-    setCardXCoordinate(clientX);
-  };
-
-  const onTouchEnd: React.TouchEventHandler<HTMLDivElement> = (event) => {
-    resetMovementFactor();
-    setAnimatingBack('STARTED');
-  };
-  const onTouchCancel: React.TouchEventHandler<HTMLDivElement> = (event) => {
-    console.log('touch cancel fired', event.target);
-    resetMovementFactor();
-    setAnimatingBack('STARTED');
-  };
-
-  const onTouchMove: React.TouchEventHandler<HTMLDivElement> = (event) => {
-    const { clientX } = event.changedTouches.item(0);
-    updateMovementFactor(clientX);
-  };
+  const swipeResult = useCardSwipeResult(myFlashCardRef, isAtFront);
+  const cardAnimatedOut = useCardAnimation(myFlashCardRef, isAtFront, swipeResult);
 
   useEffect(() => {
-    console.log('intersection ratio', entry?.intersectionRatio, cardXCoordinate);
-    if (entry?.intersectionRatio && entry.intersectionRatio < 0.35) {
-      // setUserSelectionMade(true);
+    if (swipeResult !== 'PENDING' && cardAnimatedOut) {
+      console.log('recording move..');
       recordMove({
+        decision: swipeResult,
         wordId: word.id,
-        decision: movementFactor < 0 ? 'LEFT' : 'RIGHT',
       });
-      resetMovementFactor();
     }
-  }, [entry?.intersectionRatio, recordMove, movementFactor, word, cardXCoordinate]);
-
-  useEffect(() => {
-    if (animatingBack === 'STARTED') {
-      const timeout = setTimeout(() => setAnimatingBack('NOT_STARTED'), 100);
-      return () => clearTimeout(timeout);
-    }
-  }, [animatingBack]);
-
-  if (userSelectionMade) {
-    return <p>You have selected {movementFactor < 0 ? 'left' : 'right'}. Looking up next card..</p>;
-  }
-
-  /* return (
-    <FlashCardContainer $movementFactor={0} $isAtFront={isAtFront}>
-      <Corner>
-        <LogoWithoutText />
-      </Corner>
-      <LoadingCard />
-    </FlashCardContainer>
-  ); */
+  }, [swipeResult, cardAnimatedOut, recordMove, word]);
 
   return !isFetchingWord && word ? (
-    <FlashCardContainer
-      $isAtFront={isAtFront}
-      $animatingBack={animatingBack === 'STARTED'}
-      ref={movementFactor != 0 && isAtFront ? myFlashCardRef : undefined}
-      $movementFactor={movementFactor}
-      onTouchStart={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchStart : undefined}
-      onTouchEnd={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchEnd : undefined}
-      onTouchCancel={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchCancel : undefined}
-      onTouchMove={isAtFront && animatingBack === 'NOT_STARTED' ? onTouchMove : undefined}
-    >
+    <FlashCardContainer ref={myFlashCardRef} $isAtFront={isAtFront} onClick={() => setReveleavedCard(true)}>
       <Corner>
         <LogoWithoutText />
       </Corner>
@@ -361,7 +276,7 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
       </FlashCardBaseBody>
     </FlashCardContainer>
   ) : (
-    <FlashCardContainer $movementFactor={0} $isAtFront={isAtFront}>
+    <FlashCardContainer $isAtFront={isAtFront}>
       <Corner>
         <LogoWithoutText />
       </Corner>

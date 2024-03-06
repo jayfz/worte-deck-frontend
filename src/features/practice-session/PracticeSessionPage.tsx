@@ -30,10 +30,15 @@ const DeckContainer = styled.div`
 function Deck() {
   const { currentWord, nextWord } = useGameContext();
 
+  const backKeyUsed = `${nextWord?.id ?? '-1'}-back`;
+  const frontKeyUsed = `${currentWord?.id ?? '-2'}-front`;
+
+  console.log('backkeyused', backKeyUsed, 'frontkeyused', frontKeyUsed);
+
   return (
     <DeckContainer>
-      <FlashCard isAtFront={false} key={nextWord?.id ?? '-1'} />
-      <FlashCard isAtFront={true} key={currentWord?.id ?? '-2'} />
+      <FlashCard isAtFront={false} key={backKeyUsed} />
+      <FlashCard isAtFront={true} key={frontKeyUsed} />
     </DeckContainer>
   );
 }
