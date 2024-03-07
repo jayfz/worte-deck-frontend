@@ -4,7 +4,7 @@ export type SwipeSelection = 'PENDING' | 'LEFT' | 'RIGHT';
 
 const threasholdArray = Array(20)
   .fill(0)
-  .map((item, index) => index * 0.05);
+  .map((_, index) => index * 0.05);
 
 export default function useCardSwipeResult(refTarget: MutableRefObject<HTMLDivElement | null>, isAtFront: boolean) {
   const [selection, setSelection] = useState<SwipeSelection>('PENDING');

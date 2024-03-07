@@ -79,7 +79,6 @@ function ContextualMenuIcon() {
 export default function MenuBar() {
   const theme = useTheme();
 
-  console.log(location);
   return (
     <IconContext.Provider value={{ size: '1.5rem', color: theme.primaryTextColor, style: { strokeWidth: 9 } }}>
       <MenuBarContainer $gap="1rem">

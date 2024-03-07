@@ -1,14 +1,25 @@
 import useGameWordsList from '@/features/practice-session/useGameWordList';
-import { Noun, Word } from '@/types/domainTypes';
-import { PropsWithChildren, createContext, useState } from 'react';
+import useReportPracticeSessionResults from '@/features/practice-session/useReportPracticeSessionResults';
+import { Word } from '@/types/domainTypes';
+import { PropsWithChildren, createContext, useRef, useState } from 'react';
 
+type GameStatus = 'NOT_STARTED' | 'STARTED' | 'ABORTED' | 'COMPLETED';
+export type GameResults = {
+  duration: number;
+  movements: GameMovement[];
+};
 type GameContextType = {
   currentWord: Word;
   nextWord: Word;
-  recordMove: (movement: GameMovement) => void;
   score: number;
   completed: number;
   isFetchingWord: boolean;
+  recordMove: (movement: GameMovement) => void;
+  gameStatus: GameStatus;
+  abortGame: () => void;
+  reportGameResults: () => void;
+  gameResults: GameResults;
+  isSavingPracticeSessionResults: boolean;
   //pauseTimer()
   //resumeTimer()
 };
@@ -27,7 +38,14 @@ type GameMovement = {
 export function GameContextProvider({ children, practiceSessionId }: PropsWithChildren<GameContextProviderType>) {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [movements, setMovements] = useState<GameMovement[]>([]);
-  const [gameEnded, setGameEnded] = useState(false);
+  const [gameStatus, setGameStatus] = useState<GameStatus>('STARTED');
+  const startedAtRef = useRef(Date.now());
+  const { reportPracticeSessionResults, isSavingPracticeSessionResults } = useReportPracticeSessionResults();
+
+  const gameResults: GameResults = {
+    duration: Math.floor((Date.now() - startedAtRef.current) / 1000),
+    movements,
+  };
 
   const { data, fetchNextPage, hasNextPage, isFetching } = useGameWordsList(practiceSessionId);
 
@@ -38,7 +56,7 @@ export function GameContextProvider({ children, practiceSessionId }: PropsWithCh
     const allMovements = [...movements, move];
     setMovements(allMovements);
     if (allMovements.length == gameSessionWordCount) {
-      setGameEnded(true);
+      setGameStatus('COMPLETED');
     } else {
       setCurrentWordIndex((prev) => prev + 1);
       console.log('recorded move', move, allMovements.length);
@@ -49,22 +67,27 @@ export function GameContextProvider({ children, practiceSessionId }: PropsWithCh
     }
   };
 
+  const reportGameResults = () => {
+    reportPracticeSessionResults(gameResults);
+  };
+
+  const abortGame = () => {
+    setGameStatus('ABORTED');
+  };
+
   const providerValue: GameContextType = {
     completed: (movements.length / gameSessionWordCount) * 100 || 0,
     score: (movements.filter((m) => m.decision === 'RIGHT').length / movements.length) * 5 || 0,
     currentWord: wordPool[currentWordIndex],
-    recordMove,
     isFetchingWord: isFetching,
     nextWord: wordPool[currentWordIndex + 1],
+    gameStatus,
+    gameResults,
+    recordMove,
+    abortGame,
+    reportGameResults,
+    isSavingPracticeSessionResults,
   };
-
-  if (gameEnded) {
-    return (
-      <p>
-        game ended :) - score: {providerValue.score}, - totalwords: {gameSessionWordCount}
-      </p>
-    );
-  }
 
   return <GameContext.Provider value={providerValue}>{children}</GameContext.Provider>;
 }

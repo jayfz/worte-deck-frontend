@@ -1,6 +1,7 @@
 import LoginPage from '@/features/login/LoginPage';
 import Logout from '@/features/login/Logout';
 import PracticeSessionPage from '@/features/practice-session/PracticeSessionPage';
+import PracticeSessionResultsPage from '@/features/practice-session/PracticeSessionResultsPage';
 import ProtectedRoute from '@/routing/ProtectedRoute';
 import AppLayout from '@/ui/AppLayout';
 import { Link, Navigate, createBrowserRouter } from 'react-router-dom';
@@ -36,7 +37,7 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/practice-session/results',
-        element: <p>practice session results page placeholder here</p>,
+        element: <PracticeSessionResultsPage />,
       },
       {
         path: '/app/practice-session/tests',

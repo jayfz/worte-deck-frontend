@@ -74,9 +74,6 @@ export default function useCardAnimation(
   //run if we are animating back only
   useEffect(() => {
     if (!ref.current || !isAtFront || animateOutStatus !== 'PENDING' || !isAnimatingBack) return;
-
-    console.log('animating back');
-
     const card = ref.current;
     const animationDurationInMiliseconds = 400;
     const id = requestAnimationFrame(() => {
@@ -92,13 +89,11 @@ export default function useCardAnimation(
   useEffect(() => {
     if (!ref.current || !isAtFront || animateOutStatus !== 'STARTED' || isAnimatingBack) return;
 
-    console.log('animating out..');
     const card = ref.current;
     const animationDurationInMiliseconds = 400;
     movementFactorRef.current *= 1.5;
     const id = requestAnimationFrame(() => {
       const transitionText = `transform ${animationDurationInMiliseconds / 1000}s ease`;
-      console.log(transitionText);
       card.style.transition = transitionText;
       updateCardRotationAndPosition();
       setTimeout(() => setAnimateOutStatus('FINISHED'), animationDurationInMiliseconds);

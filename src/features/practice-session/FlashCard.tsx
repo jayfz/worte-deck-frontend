@@ -4,15 +4,15 @@ import useGameContext from '@/features/practice-session/useGameContext';
 import { NounGender, Word } from '@/types/domainTypes';
 import { Flex } from '@/ui/Flex';
 import LogoWithoutText from '@/ui/LogoWithoutText';
-import { useIntersection } from '@mantine/hooks';
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IoVolumeHighOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
-const FlashCardContainer = styled(Flex.Column).attrs<{
+type FlashCardContainerProps = {
   $isAtFront: boolean;
-}>((props) => props)`
+};
+const FlashCardContainer = styled(Flex.Column).attrs<FlashCardContainerProps>((props) => props)`
   aspect-ratio: 2/3;
   position: relative;
   z-index: 10;
@@ -47,7 +47,8 @@ const StyledPlayButton = styled.button`
 export function PlayButton(props: PlayButtonProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const onPlayAudio = () => {
+  const onPlayAudio: MouseEventHandler = (event) => {
+    event.stopPropagation();
     const audioElement = audioRef.current;
     if (!audioElement) return;
     audioElement.paused ? audioElement.play() : audioElement.pause();
@@ -114,7 +115,7 @@ function ExtraWordInfo({ word }: { word: Word }) {
         {word.isComparable && (
           <StyledParagraph>
             <span>{word.comparative}</span>
-            &dash;
+            &mdash;
             <span>{word.superlative}</span>
           </StyledParagraph>
         )}
@@ -173,7 +174,10 @@ const IpaPronunciation = styled.p`
   font-family: 'Roboto Condensed', sans-serif;
 `;
 
-const FlashCardBaseBody = styled(Flex.Column)``;
+const FlashCardBaseBody = styled(Flex.Column)`
+  flex: 1;
+  align-items: center;
+`;
 const NounPlural = styled.p``;
 
 const LoadingCardContainer = styled(Flex.Column)`
@@ -233,7 +237,6 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
 
   useEffect(() => {
     if (swipeResult !== 'PENDING' && cardAnimatedOut) {
-      console.log('recording move..');
       recordMove({
         decision: swipeResult,
         wordId: word.id,
@@ -242,7 +245,13 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
   }, [swipeResult, cardAnimatedOut, recordMove, word]);
 
   return !isFetchingWord && word ? (
-    <FlashCardContainer ref={myFlashCardRef} $isAtFront={isAtFront} onClick={() => setReveleavedCard(true)}>
+    <FlashCardContainer
+      ref={myFlashCardRef}
+      $isAtFront={isAtFront}
+      onClick={() => {
+        setReveleavedCard(true);
+      }}
+    >
       <Corner>
         <LogoWithoutText />
       </Corner>
