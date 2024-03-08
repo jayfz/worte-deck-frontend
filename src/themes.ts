@@ -14,6 +14,8 @@ export type ApplicationTheme = {
   drawerLinkColor: string;
   drawerIconColor: string;
   gamePlayButtonColor: string;
+  rightSwipeColor: string;
+  leftSwipeColor: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -32,6 +34,8 @@ export const lightTheme: ApplicationTheme = {
   drawerLinkColor: 'var(--wd-inkyblue-4-dark)',
   drawerIconColor: 'var(--wd-inkyblue-4-80op-dark)',
   gamePlayButtonColor: 'var(--wd-brightyellow-4-light)',
+  rightSwipeColor: 'var(--wd-rightlygreen-24-50op-light)',
+  leftSwipeColor: 'var(--wd-wronglyyellow-24-light)',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -50,4 +54,6 @@ export const darkTheme: ApplicationTheme = {
   drawerLinkColor: 'var(--wd-almostwhite-12-dark)',
   drawerIconColor: 'var(--wd-almostwhite-12-80op-dark)',
   gamePlayButtonColor: 'var(--wd-almostwhite-12-dark)',
+  rightSwipeColor: 'var(--wd-rightlygreen-24-50op-dark)',
+  leftSwipeColor: 'var(--wd-wronglyyellow-24-dark)',
 };

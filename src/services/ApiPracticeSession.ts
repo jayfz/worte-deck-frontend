@@ -2,7 +2,6 @@ import { GameResults } from '@/features/practice-session/GameContext';
 import axios from '@/services/axiosDefaults';
 
 import { AppRestResponse, CreatedPracticeSession, PagedAppRestResponse, Word } from '@/types/domainTypes';
-import { sleep } from '@/utils/helpers';
 
 export async function getPracticeSessionWords(practiceSessionId: number, pageNumber = 0) {
   const { data } = await axios.get<PagedAppRestResponse<Word[]>>(
@@ -19,5 +18,7 @@ export async function createPracticeSession() {
 }
 
 export async function postPracticeSessionResults(results: GameResults) {
-  await sleep(300);
+  const { data } = await axios.post<AppRestResponse<string>>('/practice-sessions/results', results);
+
+  return data.payload;
 }

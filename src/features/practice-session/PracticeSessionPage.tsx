@@ -48,7 +48,7 @@ function FlashCardGame() {
 
   return (
     <>
-      <GameScore score={score} />
+      <GameScore key={score} score={score} />
       <Deck />
       <GameProgressBar />
       <GameTimer />

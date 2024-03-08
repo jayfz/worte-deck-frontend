@@ -14,11 +14,10 @@ type FlashCardContainerProps = {
 };
 const FlashCardContainer = styled(Flex.Column).attrs<FlashCardContainerProps>((props) => props)`
   aspect-ratio: 2/3;
-  position: relative;
   z-index: 10;
   width: 80svw;
   background-color: ${(props) => props.theme.sectionBg};
-  border: ${(props) => `2px solid ${props.theme.borderColor}`};
+  border: ${(props) => `4px solid ${props.theme.borderColor}`};
   max-width: 640px;
   border-radius: 1rem;
   padding: 0.75rem;
@@ -236,13 +235,15 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
   const cardAnimatedOut = useCardAnimation(myFlashCardRef, isAtFront, swipeResult);
 
   useEffect(() => {
-    if (swipeResult !== 'PENDING' && cardAnimatedOut) {
+    if (swipeResult !== 'PENDING' && cardAnimatedOut && !isFetchingWord) {
+      console.log('pre-recording result. conditions', swipeResult, cardAnimatedOut);
+
       recordMove({
         decision: swipeResult,
         wordId: word.id,
       });
     }
-  }, [swipeResult, cardAnimatedOut, recordMove, word]);
+  }, [swipeResult, cardAnimatedOut, recordMove, word, isFetchingWord]);
 
   return !isFetchingWord && word ? (
     <FlashCardContainer

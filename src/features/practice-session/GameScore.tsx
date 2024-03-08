@@ -1,11 +1,26 @@
 import { Flex } from '@/ui/Flex';
-import React from 'react';
+import React, { useRef } from 'react';
 import { IconContext } from 'react-icons';
 import { IoStar, IoStarHalfOutline, IoStarOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
 const GameScoreContainer = styled(Flex.Row)`
   color: ${(props) => props.theme.gameStarsColor};
+  animation: growAndBack 1s 1;
+
+  @keyframes growAndBack {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.4);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 `;
 
 type GameScoreProps = {
@@ -13,6 +28,8 @@ type GameScoreProps = {
 };
 export default function GameScore({ score }: GameScoreProps) {
   const starRow = [];
+
+  const starRowRef = useRef<HTMLDivElement | null>(null);
 
   for (let i = 1; i <= 5; i += 1) {
     if (score >= i) {
@@ -26,9 +43,20 @@ export default function GameScore({ score }: GameScoreProps) {
     }
   }
 
+  /* useEffect(() => {
+    if (starRowRef.current) {
+      const starRowElement = starRowRef.current;
+      starRowElement.style.transform = 'scale(1.1)';
+      starRowElement.style.transition = 'transform 0.4s ease';
+      const animationId = setTimeout(() => {
+        starRowRef.c;
+      }, 400);
+    }
+  }, [score]); */
+
   return (
     <IconContext.Provider value={{ size: '2rem' }}>
-      <GameScoreContainer $gap="0.5rem">
+      <GameScoreContainer $gap="0.5rem" ref={starRowRef}>
         {starRow.map((star, key) => React.cloneElement(star, { key }))}
       </GameScoreContainer>
     </IconContext.Provider>
