@@ -45,6 +45,14 @@ export const GlobalStyle = createGlobalStyle`
         border: none;
     }
 
+    ::view-transition-image-pair(play-button-back),
+    ::view-transition-image-pair(ipa-pronunciation-back),
+    ::view-transition-image-pair(german-word-back){
+        display: none;
+    }
+
+        
+
     @media only screen and (max-width: 768px){
         html,body, #root {
             height: 100%;

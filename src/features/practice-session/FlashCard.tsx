@@ -5,6 +5,7 @@ import { NounGender, Word } from '@/types/domainTypes';
 import { Flex } from '@/ui/Flex';
 import LogoWithoutText from '@/ui/LogoWithoutText';
 import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IoVolumeHighOutline } from 'react-icons/io5';
 import styled from 'styled-components';
@@ -14,10 +15,11 @@ type FlashCardContainerProps = {
 };
 const FlashCardContainer = styled(Flex.Column).attrs<FlashCardContainerProps>((props) => props)`
   aspect-ratio: 2/3;
-  z-index: 10;
+  z-index: ${(props) => (props.$isAtFront ? 10 : 1)};
   width: 80svw;
-  background-color: ${(props) => props.theme.sectionBg};
-  border: ${(props) => `4px solid ${props.theme.borderColor}`};
+  background: ${(props) =>
+    `linear-gradient(${props.theme.sectionBg}, ${props.theme.sectionBg}) padding-box, linear-gradient(${props.theme.borderColor}, ${props.theme.borderColor}) border-box`};
+  border: 4px solid transparent;
   max-width: 640px;
   border-radius: 1rem;
   padding: 0.75rem;
@@ -30,9 +32,14 @@ const Corner = styled.div`
 
 type PlayButtonProps = {
   audioSource: string[];
+  positionId: string;
 };
 
-const StyledPlayButton = styled.button`
+const StyledPlayButton = styled.button.attrs<{ $itemId: string }>((props) => ({
+  style: {
+    viewTransitionName: `play-button-${props.$itemId}`,
+  },
+}))`
   padding: 1rem;
   border-radius: 999px;
   background-color: ${(props) => props.theme.gamePlayButtonColor};
@@ -68,7 +75,7 @@ export function PlayButton(props: PlayButtonProps) {
           return null;
         })}
       </audio>
-      <StyledPlayButton onClick={onPlayAudio}>
+      <StyledPlayButton $itemId={props.positionId} onClick={onPlayAudio}>
         <IoVolumeHighOutline size={'1.5rem'} />
       </StyledPlayButton>
     </>
@@ -164,11 +171,19 @@ const RevealedWordInfo = styled(Flex.Column)`
   gap: 0.5rem;
 `;
 
-const GermanWord = styled.p`
+const GermanWord = styled.p.attrs<{ $itemId: string }>((props) => ({
+  style: {
+    viewTransitionName: `german-word-${props.$itemId}`,
+  },
+}))`
   font-size: 1.5rem;
 `;
 
-const IpaPronunciation = styled.p`
+const IpaPronunciation = styled.p.attrs<{ $itemId: string }>((props) => ({
+  style: {
+    viewTransitionName: `ipa-pronunciation-${props.$itemId}`,
+  },
+}))`
   font-weight: 400;
   font-family: 'Roboto Condensed', sans-serif;
 `;
@@ -236,8 +251,6 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
 
   useEffect(() => {
     if (swipeResult !== 'PENDING' && cardAnimatedOut && !isFetchingWord) {
-      console.log('pre-recording result. conditions', swipeResult, cardAnimatedOut);
-
       recordMove({
         decision: swipeResult,
         wordId: word.id,
@@ -250,7 +263,15 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
       ref={myFlashCardRef}
       $isAtFront={isAtFront}
       onClick={() => {
-        setReveleavedCard(true);
+        flushSync(() => {
+          if (!document.startViewTransition) {
+            setReveleavedCard(true);
+          } else {
+            document.startViewTransition(() => {
+              setReveleavedCard((prev) => !prev);
+            });
+          }
+        });
       }}
     >
       <Corner>
@@ -258,9 +279,11 @@ export default function FlashCard({ isAtFront }: FlashCardProps) {
       </Corner>
       <FlashCardBaseBody>
         <AlwaysVisibleWordInfo>
-          <PlayButton audioSource={word.recordingURLs} />
-          <GermanWord>{guessWord}</GermanWord>
-          <IpaPronunciation>[{word.pronunciations[0] ?? 'unavailable'}]</IpaPronunciation>
+          <PlayButton positionId={isAtFront ? 'front' : 'back'} audioSource={word.recordingURLs} />
+          <GermanWord $itemId={isAtFront ? 'front' : 'back'}>{guessWord}</GermanWord>
+          <IpaPronunciation $itemId={isAtFront ? 'front' : 'back'}>
+            [{word.pronunciations[0] ?? 'unavailable'}]
+          </IpaPronunciation>
 
           <>{word.type === 'NOUN' && <NounPlural>Die {word.plural}</NounPlural>}</>
 

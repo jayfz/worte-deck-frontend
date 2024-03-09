@@ -19,6 +19,7 @@ const ProgressBar = styled.div<{ $completed: number }>`
   position: absolute;
   width: 100%;
   transform: ${(props) => `translate(calc(${props.$completed}% - 100%)) scaleY(1.1)`};
+  transition: transform 0.2s ease;
 `;
 export default function GameProgressBar() {
   const { completed } = useGameContext();

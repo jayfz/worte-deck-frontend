@@ -8,7 +8,7 @@ import useGameContext from '@/features/practice-session/useGameContext';
 import { Button } from '@/ui/Button';
 import { Flex } from '@/ui/Flex';
 import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 const PracticeSessionContainer = styled(Flex.Column)`
   padding: 0 1.25rem;
@@ -32,15 +32,13 @@ const DeckContainer = styled.div`
 function FlashCardGame() {
   const { gameStatus, score, gameResults, reportGameResults, isSavingPracticeSessionResults } = useGameContext();
 
+  const navigate = useNavigate();
   useEffect(() => {
     if (gameStatus === 'COMPLETED' && !isSavingPracticeSessionResults) {
       reportGameResults();
+      navigate('/app/practice-session/results', { state: gameResults, unstable_viewTransition: true });
     }
-  }, [gameStatus, isSavingPracticeSessionResults, reportGameResults]);
-
-  if (gameStatus === 'COMPLETED') {
-    return <Navigate to="/app/practice-session/results" state={gameResults} />;
-  }
+  }, [gameStatus, isSavingPracticeSessionResults, reportGameResults, gameResults, navigate]);
 
   if (gameStatus === 'ABORTED') {
     return <Navigate to="/app" />;

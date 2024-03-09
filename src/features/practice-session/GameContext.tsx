@@ -1,7 +1,7 @@
 import useGameWordsList from '@/features/practice-session/useGameWordList';
 import useReportPracticeSessionResults from '@/features/practice-session/useReportPracticeSessionResults';
 import { Word } from '@/types/domainTypes';
-import { PropsWithChildren, createContext, useEffect, useRef, useState } from 'react';
+import { PropsWithChildren, createContext, useRef, useState } from 'react';
 
 type GameStatus = 'NOT_STARTED' | 'STARTED' | 'ABORTED' | 'COMPLETED';
 export type GameResults = {
@@ -87,10 +87,6 @@ export function GameContextProvider({ children, practiceSessionId }: PropsWithCh
     reportGameResults,
     isSavingPracticeSessionResults,
   };
-
-  useEffect(() => {
-    console.log(wordPool.length, movements, currentWordIndex);
-  }, [movements.length, wordPool, movements, currentWordIndex]);
 
   return <GameContext.Provider value={providerValue}>{children}</GameContext.Provider>;
 }

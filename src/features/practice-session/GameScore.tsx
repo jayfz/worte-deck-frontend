@@ -7,6 +7,7 @@ import styled from 'styled-components';
 const GameScoreContainer = styled(Flex.Row)`
   color: ${(props) => props.theme.gameStarsColor};
   animation: growAndBack 1s 1;
+  view-transition-name: score-star;
 
   @keyframes growAndBack {
     0% {
