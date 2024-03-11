@@ -24,7 +24,7 @@ const getToasterOptions = (theme: ApplicationTheme) => {
       fontSize: '16px',
       maxWidth: '500px',
       padding: '16px 24px',
-      backgroundColor: theme.bg,
+      backgroundColor: theme.sectionBg,
       color: theme.primaryTextColor,
     },
   };

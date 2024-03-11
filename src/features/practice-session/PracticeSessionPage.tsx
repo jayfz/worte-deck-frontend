@@ -7,8 +7,9 @@ import useCreatePracticeSession from '@/features/practice-session/useCreatePract
 import useGameContext from '@/features/practice-session/useGameContext';
 import { Button } from '@/ui/Button';
 import { Flex } from '@/ui/Flex';
+import Popup from '@/ui/Popup';
 import { useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useBlocker, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 const PracticeSessionContainer = styled(Flex.Column)`
   padding: 0 1.25rem;
@@ -30,7 +31,13 @@ const DeckContainer = styled.div`
 `;
 
 function FlashCardGame() {
-  const { gameStatus, score, gameResults, reportGameResults, isSavingPracticeSessionResults } = useGameContext();
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      gameStatus === 'STARTED' && currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  const { abortGame, gameStatus, score, gameResults, reportGameResults, isSavingPracticeSessionResults } =
+    useGameContext();
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -46,6 +53,28 @@ function FlashCardGame() {
 
   return (
     <>
+      {blocker.state === 'blocked' && (
+        <Popup>
+          <Popup.Message>Are you sure you want to quit the game?</Popup.Message>
+          <Popup.ButtonSelection>
+            <Popup.Ok
+              onClick={() => {
+                blocker.reset();
+              }}
+            >
+              Continue playing
+            </Popup.Ok>
+            <Popup.Cancel
+              onClick={() => {
+                abortGame();
+                blocker.proceed();
+              }}
+            >
+              Quit
+            </Popup.Cancel>
+          </Popup.ButtonSelection>
+        </Popup>
+      )}
       <GameScore key={score} score={score} />
       <Deck />
       <GameProgressBar />

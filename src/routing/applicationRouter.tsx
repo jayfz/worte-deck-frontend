@@ -21,7 +21,7 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app',
-        element: <Navigate to="/app/practice-session" />,
+        element: <Navigate to="/app/progress-overview" />,
       },
       {
         path: '/app/progress-overview',

@@ -50,9 +50,7 @@ export const GlobalStyle = createGlobalStyle`
     ::view-transition-image-pair(german-word-back){
         display: none;
     }
-
-        
-
+    
     @media only screen and (max-width: 768px){
         html,body, #root {
             height: 100%;
