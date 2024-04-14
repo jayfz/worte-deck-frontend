@@ -135,7 +135,7 @@ function ExtraWordInfo({ word }: { word: Word }) {
     attributes.push(word.isRegular ? 'regular' : 'irregular');
     if (word.isSeparable) attributes.push('separable');
     if (word.hasPrefix) attributes.push('prefixed');
-    return <p>{attributes.join(',')} verb</p>;
+    return <p>{attributes.join(', ')} verb</p>;
   }
 
   return <p>{word.type.toLowerCase()}</p>;
