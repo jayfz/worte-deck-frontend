@@ -2,9 +2,10 @@ import LoginPage from '@/features/login/LoginPage';
 import Logout from '@/features/login/Logout';
 import PracticeSessionPage from '@/features/practice-session/PracticeSessionPage';
 import PracticeSessionResultsPage from '@/features/practice-session/PracticeSessionResultsPage';
+import ProgressOverviewPage from '@/features/progress-overview/ProgressOverviewPage';
 import ProtectedRoute from '@/routing/ProtectedRoute';
 import AppLayout from '@/ui/AppLayout';
-import { Link, Navigate, createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 
 export const applicationRouter = createBrowserRouter([
   {
@@ -25,11 +26,7 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/progress-overview',
-        element: (
-          <p>
-            Progress overview page placeholder here <Link to="/app/manage-vocabulary/add-word">Add word</Link>
-          </p>
-        ),
+        element: <ProgressOverviewPage />,
       },
       {
         path: '/app/practice-session',

@@ -45,6 +45,17 @@ export const GlobalStyle = createGlobalStyle`
         border: none;
     }
 
+
+  @keyframes rotation360 {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
     ::view-transition-image-pair(play-button-back),
     ::view-transition-image-pair(ipa-pronunciation-back),
     ::view-transition-image-pair(german-word-back){

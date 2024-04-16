@@ -75,3 +75,35 @@ export type CommonExpression = BaseWord & {
 };
 
 export type Word = Noun | Adjective | Verb | Adverb | CommonExpression;
+
+export type WordStats = {
+  nounCount: number;
+  adjectiveCount: number;
+  verbCount: number;
+  adverbCount: number;
+  commonExpressionCount: number;
+};
+
+export type PracticeSessionStats = {
+  totalCount: number;
+  averageScore: number;
+  secondsSpent: number;
+  vocabularyLevel: string;
+  leftSwipeCount: number;
+  rightSwipeCount: number;
+};
+
+export type DifficultWord = {
+  wordId: number;
+  word: string;
+  englishTranslations: string[];
+  leftSwipeCount: number;
+};
+
+export type PracticeSessionResultSummary = {
+  id: number;
+  createdAt: string;
+  wordsTestedCount: number;
+  durationInSeconds: number;
+  score: string;
+};

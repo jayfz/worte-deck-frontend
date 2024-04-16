@@ -10,3 +10,16 @@ export function formatSeconds(seconds: number) {
 function padNumberByTwo(num: number) {
   return `${num}`.padStart(2, '0');
 }
+
+export function formatSecondsToShortString(seconds: number) {
+  if (seconds < 60) return `${seconds} secs`;
+
+  const minutes = Math.floor(seconds / 60);
+  seconds -= minutes * 60;
+
+  if (minutes < 60) return `${minutes} mins`;
+
+  const hours = Math.floor(minutes / 60);
+
+  return `${hours} hrs`;
+}

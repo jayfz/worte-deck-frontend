@@ -4,6 +4,7 @@ import { GlobalStyle } from '@/styles.globals';
 import { ApplicationTheme, darkTheme, lightTheme } from '@/themes';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -39,6 +40,7 @@ export default function App() {
     <GoogleOAuthProvider clientId={googleOAuthClientId}>
       <ThemeProvider theme={selectedTheme}>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false} />
           <RouterProvider router={applicationRouter} />
           <Toaster
             position="bottom-center"

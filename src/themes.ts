@@ -16,6 +16,12 @@ export type ApplicationTheme = {
   gamePlayButtonColor: string;
   rightSwipeColor: string;
   leftSwipeColor: string;
+  topCardBorderColor: string;
+  topCardBackgroundRadial1: string;
+  topCardBackgroundRadial2: string;
+  constrast: string;
+  statPanelOdd: string;
+  ColoredStatPanelText: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -36,6 +42,12 @@ export const lightTheme: ApplicationTheme = {
   gamePlayButtonColor: 'var(--wd-brightyellow-4-light)',
   rightSwipeColor: 'var(--wd-rightlygreen-24-50op-light)',
   leftSwipeColor: 'var(--wd-wronglyyellow-24-light)',
+  topCardBorderColor: '#78CD90',
+  topCardBackgroundRadial1: 'rgba(180, 255, 105, 0.7)',
+  topCardBackgroundRadial2: 'rgba(120, 205, 144, 0.7)',
+  constrast: '1',
+  statPanelOdd: '#F8FAFC',
+  ColoredStatPanelText: 'white',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -56,4 +68,11 @@ export const darkTheme: ApplicationTheme = {
   gamePlayButtonColor: 'var(--wd-almostwhite-12-dark)',
   rightSwipeColor: 'var(--wd-rightlygreen-24-50op-dark)',
   leftSwipeColor: 'var(--wd-wronglyyellow-24-dark)',
+
+  topCardBorderColor: 'rgba(130, 106, 177, 1)',
+  topCardBackgroundRadial1: 'rgba(172, 106, 255, 0.7)',
+  topCardBackgroundRadial2: 'rgba(108, 83, 128, 0.7)',
+  constrast: '0.9',
+  statPanelOdd: '#2C4358',
+  ColoredStatPanelText: 'white',
 };
