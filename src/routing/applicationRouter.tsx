@@ -3,6 +3,7 @@ import Logout from '@/features/login/Logout';
 import PracticeSessionPage from '@/features/practice-session/PracticeSessionPage';
 import PracticeSessionResultsPage from '@/features/practice-session/PracticeSessionResultsPage';
 import ProgressOverviewPage from '@/features/progress-overview/ProgressOverviewPage';
+import VocabularyPage from '@/features/vocabulary/VocabularyPage';
 import ProtectedRoute from '@/routing/ProtectedRoute';
 import AppLayout from '@/ui/AppLayout';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
@@ -42,7 +43,7 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/vocabulary',
-        element: <p>vocabulary page placeholder here</p>,
+        element: <VocabularyPage />,
       },
       {
         path: '/app/word/:id',

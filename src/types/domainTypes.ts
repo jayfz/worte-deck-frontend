@@ -100,6 +100,15 @@ export type DifficultWord = {
   leftSwipeCount: number;
 };
 
+export type VocabularyWord = {
+ id: string,
+ word: string,
+ englishTranslations: string[]
+ recordingURLs: string[],
+ pronunciations: string[],
+ type: WordType
+}
+
 export type PracticeSessionResultSummary = {
   id: number;
   createdAt: string;
