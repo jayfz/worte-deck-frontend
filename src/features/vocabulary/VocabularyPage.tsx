@@ -1,6 +1,6 @@
 import { FilterPill, FilterRow } from '@/features/vocabulary/DraggableFilterRow';
 import SearchBar from '@/features/vocabulary/SearchBar';
-import VocabularyWordListItem from '@/features/vocabulary/VocabularyWordListItem';
+import VocabularyWordListItem, { VocabularyWordListItemSkeleton } from '@/features/vocabulary/VocabularyWordListItem';
 import useVocabularWords from '@/features/vocabulary/useVocabularWords';
 import { Flex } from '@/ui/Flex';
 import PageTitle from '@/ui/PageTitle';
@@ -31,6 +31,15 @@ export default function VocabularyPage() {
     hasNextVocabularyPage,
     fetchNextVocabularyWordPage,
   } = useVocabularWords({ searchText: searchText, filterByWordType: filterByWordType });
+
+  let Skeletons = null;
+
+  if (isPendingVocabularyWords && !vocabularyWords) {
+    Skeletons = Array(5).fill(null);
+    Skeletons.forEach((item, index, array) => {
+      array[index] = <VocabularyWordListItemSkeleton key={index} />;
+    });
+  }
 
   const updateSearchText = (text: string) => {
     setSearchText(text);
@@ -63,6 +72,7 @@ export default function VocabularyPage() {
           <FilterPill $by="COMMON_EXPRESSION">Common Expressions</FilterPill>
         </FilterRow>
         <Flex.Column $gap={'0.5rem'}>
+          {Skeletons}
           {!isPendingVocabularyWords &&
             vocabularyWords?.pages
               ?.flatMap((page) => page.payload)

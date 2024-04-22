@@ -8,21 +8,10 @@ import {
 } from '@/features/progress-overview/StrippedStatPanel';
 import useLastFewPracticeSessions from '@/features/progress-overview/useLastFewPracticeSessions';
 import { Flex } from '@/ui/Flex';
+import { Pill } from '@/ui/Pill';
 import { formatSecondsToShortString } from '@/utils/formatters';
 import { IoStar } from 'react-icons/io5';
 import styled from 'styled-components';
-
-const Pill = styled.p`
-  background-color: ${(props) => props.theme.primaryTextColor};
-  color: ${(props) => props.theme.bg};
-  border-radius: 5rem;
-  font-weight: 600;
-  display: inline-flex;
-  padding: 1px 6px;
-  margin-left: 0.5rem;
-  font-size: 0.75rem;
-  align-items: center;
-`;
 
 const GlowingStar = styled.div`
   color: ${(props) => props.theme.gameStarsColor};

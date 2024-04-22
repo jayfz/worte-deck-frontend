@@ -23,3 +23,7 @@ export function formatSecondsToShortString(seconds: number) {
 
   return `${hours} hrs`;
 }
+
+export function formatDate(date: string) {
+  return new Date(date).toDateString().split(' ').slice(1).join(' ');
+}

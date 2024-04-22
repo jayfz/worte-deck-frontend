@@ -1,4 +1,5 @@
 import { VocabularyWord } from '@/types/domainTypes';
+import { Empty } from '@/ui/Empty';
 import { Flex } from '@/ui/Flex';
 import { SpinningIcon } from '@/ui/SpinningIcon';
 import { MouseEventHandler, forwardRef, useEffect, useRef, useState } from 'react';
@@ -91,13 +92,13 @@ const ListItem = styled.article`
   background-color: ${(props) => props.theme.sectionBg};
 `;
 const LeftInfo = styled(Flex.Column)`
+  flex-grow: 1;
   & > p:first-child {
     font-weight: 600;
     font-size: 1.125rem;
   }
 
   & > p:last-child {
-    /* white-space: wrap; */
     text-overflow: ellipsis;
   }
 `;
@@ -109,6 +110,21 @@ const RightInfo = styled(Flex.Column)`
     font-size: 0.875rem;
   }
 `;
+
+const ListItemSkeleton = styled(ListItem)``;
+
+export function VocabularyWordListItemSkeleton() {
+  return (
+    <ListItemSkeleton>
+      <LeftInfo $gap={'0.5rem'}>
+        <Empty $height="0.875rem" $width="80%" $borderRadius="0.5rem" />
+        <Empty $height="0.875rem" $width="40%" $borderRadius="0.5rem" />
+      </LeftInfo>
+      <Empty $height="2rem" $width="2rem" $borderRadius="99rem" />
+      <RightInfo></RightInfo>
+    </ListItemSkeleton>
+  );
+}
 
 type VocabularyWordListItemProps = {
   word: VocabularyWord;

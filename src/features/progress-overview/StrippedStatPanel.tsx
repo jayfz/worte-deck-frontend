@@ -1,3 +1,4 @@
+import { Empty } from '@/ui/Empty';
 import { Flex } from '@/ui/Flex';
 import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
@@ -34,18 +35,6 @@ export const StatPanelRow = styled(Flex.Row)<StatPanelRowType>`
   & > p {
     font-size: 1.5rem;
   }
-`;
-
-type EmptyType = {
-  $height: string;
-  $width: string;
-  $borderRadius: string;
-};
-const Empty = styled.div<EmptyType>`
-  height: ${(props) => props.$height};
-  width: ${(props) => props.$width};
-  border-radius: ${(props) => props.$borderRadius};
-  background-color: ${(props) => props.theme.borderColor};
 `;
 
 const StatPanelHeaderSkeletonContainer = styled(StatPanelHeader)`

@@ -22,6 +22,9 @@ export type ApplicationTheme = {
   constrast: string;
   statPanelOdd: string;
   ColoredStatPanelText: string;
+
+  sortingPillBackgroundHighlated: string;
+  sortingPillBorderHighlited: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -48,6 +51,8 @@ export const lightTheme: ApplicationTheme = {
   constrast: '1',
   statPanelOdd: '#F8FAFC',
   ColoredStatPanelText: 'white',
+  sortingPillBackgroundHighlated: 'white',
+  sortingPillBorderHighlited: '#3D4650',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -75,4 +80,6 @@ export const darkTheme: ApplicationTheme = {
   constrast: '0.9',
   statPanelOdd: '#2C4358',
   ColoredStatPanelText: 'white',
+  sortingPillBackgroundHighlated: '#1D3246',
+  sortingPillBorderHighlited: '#F0F0F0',
 };

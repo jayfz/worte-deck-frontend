@@ -1,5 +1,6 @@
 import LoginPage from '@/features/login/LoginPage';
 import Logout from '@/features/login/Logout';
+import PreviousPracticeSessionResultsPage from '@/features/practice-session-results/PreviousPracticeSessionResultsPage';
 import PracticeSessionPage from '@/features/practice-session/PracticeSessionPage';
 import PracticeSessionResultsPage from '@/features/practice-session/PracticeSessionResultsPage';
 import ProgressOverviewPage from '@/features/progress-overview/ProgressOverviewPage';
@@ -39,7 +40,7 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/practice-session/tests',
-        element: <p>practice session previous tests placeholder here</p>,
+        element: <PreviousPracticeSessionResultsPage />,
       },
       {
         path: '/app/vocabulary',
