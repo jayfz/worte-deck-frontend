@@ -49,21 +49,21 @@ export type NounGender = 'MASCULINE' | 'FEMENINE' | 'NEUTER';
 
 export type Noun = BaseWord & {
   type: 'NOUN';
-  gender: NounGender;
-  plural: string;
+  gender: NounGender | null;
+  plural: string | null;
 };
 
 export type Adjective = BaseWord & {
   type: 'ADJECTIVE';
-  isComparable: boolean;
-  comparative: string;
-  superlative: string;
+  isComparable: boolean | null;
+  comparative: string | null;
+  superlative: string | null;
 };
 export type Verb = BaseWord & {
   type: 'VERB';
-  isRegular: boolean;
-  isSeparable: boolean;
-  hasPrefix: boolean;
+  isRegular: boolean | null;
+  isSeparable: boolean | null;
+  hasPrefix: boolean | null;
 };
 
 export type Adverb = BaseWord & {
@@ -101,13 +101,13 @@ export type DifficultWord = {
 };
 
 export type VocabularyWord = {
- id: string,
- word: string,
- englishTranslations: string[]
- recordingURLs: string[],
- pronunciations: string[],
- type: WordType
-}
+  id: string;
+  word: string;
+  englishTranslations: string[];
+  recordingURLs: string[];
+  pronunciations: string[];
+  type: WordType;
+};
 
 export type PracticeSessionResultSummary = {
   id: number;

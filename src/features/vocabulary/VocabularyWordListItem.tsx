@@ -57,6 +57,10 @@ const VocabularyPlayButton = (props: VocabularyPlayButtonProps) => {
     };
   }, []);
 
+  if (props.audioSource.length == 0) {
+    return null;
+  }
+
   return (
     <IconContext.Provider value={{ size: '2.5rem', color: 'orange' }}>
       <audio ref={audioRef} preload="none">

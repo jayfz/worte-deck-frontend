@@ -4,6 +4,8 @@ import PreviousPracticeSessionResultsPage from '@/features/practice-session-resu
 import PracticeSessionPage from '@/features/practice-session/PracticeSessionPage';
 import PracticeSessionResultsPage from '@/features/practice-session/PracticeSessionResultsPage';
 import ProgressOverviewPage from '@/features/progress-overview/ProgressOverviewPage';
+import AddWordPage from '@/features/vocabulary-management/AddWordPage';
+import ManageVocabularyPage from '@/features/vocabulary-management/ManageVocabularyPage';
 import VocabularyPage from '@/features/vocabulary/VocabularyPage';
 import ProtectedRoute from '@/routing/ProtectedRoute';
 import AppLayout from '@/ui/AppLayout';
@@ -52,15 +54,15 @@ export const applicationRouter = createBrowserRouter([
       },
       {
         path: '/app/manage-vocabulary',
-        element: <p>manage vocabulary placeholder here</p>,
+        element: <ManageVocabularyPage />,
       },
       {
         path: '/app/manage-vocabulary/add-word',
-        element: <p>add word page placeholder here</p>,
+        element: <AddWordPage action="create" />,
       },
       {
         path: '/app/manage-vocabulary/edit-word',
-        element: <p>edit word page placeholder here</p>,
+        element: <AddWordPage action="update" />,
       },
     ],
   },

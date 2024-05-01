@@ -4,6 +4,7 @@ import { SpinningIcon } from '@/ui/SpinningIcon';
 import { PropsWithChildren } from 'react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { IoArrowForward } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Grid = styled.section`
@@ -54,6 +55,7 @@ const StyledGridElement = styled(Flex.Row).attrs<WordStatsGridElementProps>((pro
   border-radius: 0.5rem;
 `;
 
+const StyledGridElementSkeleton = styled(StyledGridElement)``;
 const Stat = styled(Flex.Column)`
   font-weight: 600;
   align-items: center;
@@ -70,11 +72,16 @@ const RowStat = styled(Stat)`
 
 type GridElementType = {
   $gridSlot: WordStatsGridElementProps['$gridSlot'];
+  navigateTo: string;
 };
 function GridElement(props: PropsWithChildren<GridElementType>) {
   const wordType = props.$gridSlot.charAt(0).toUpperCase() + props.$gridSlot.slice(1);
   return (
-    <StyledGridElement $gridSlot={props.$gridSlot}>
+    <StyledGridElement
+      $gridSlot={props.$gridSlot}
+      as={Link}
+      to={`/app/vocabulary?filterByWordType=${props.navigateTo}`}
+    >
       <IoArrowForward size={'2rem'} style={{ opacity: 0 }} />
       <Stat>
         <p>{props.children}</p>
@@ -85,10 +92,12 @@ function GridElement(props: PropsWithChildren<GridElementType>) {
   );
 }
 
-function GridElementSkeleton(props: PropsWithChildren<GridElementType>) {
+type GridElementTypeSkeleton = Omit<GridElementType, 'navigateTo'>;
+
+function GridElementSkeleton(props: PropsWithChildren<GridElementTypeSkeleton>) {
   const wordType = props.$gridSlot.charAt(0).toUpperCase() + props.$gridSlot.slice(1);
   return (
-    <StyledGridElement $gridSlot={props.$gridSlot} $height="5.5rem">
+    <StyledGridElementSkeleton $gridSlot={props.$gridSlot} $height="5.5rem">
       <IoArrowForward size={'2rem'} style={{ opacity: 0 }} />
       <Stat>
         <SpinningIcon style={{ padding: '0.5rem 0' }}>
@@ -98,13 +107,15 @@ function GridElementSkeleton(props: PropsWithChildren<GridElementType>) {
       </Stat>
 
       <IoArrowForward size={'2rem'} style={{ opacity: 0 }} />
-    </StyledGridElement>
+    </StyledGridElementSkeleton>
   );
 }
-
-function FullWidthGridElement(props: PropsWithChildren) {
+type FullWidthGridElementProps = {
+  navigateTo: string;
+};
+function FullWidthGridElement(props: PropsWithChildren<FullWidthGridElementProps>) {
   return (
-    <StyledGridElement $gridSlot={'commonExp'}>
+    <StyledGridElement $gridSlot={'commonExp'} as={Link} to={`/app/vocabulary?filterByWordType=${props.navigateTo}`}>
       <IoArrowForward size={'2rem'} style={{ opacity: 0 }} />
       <RowStat>
         <p>{props.children}</p>
@@ -143,11 +154,19 @@ export default function WordStatsPanel() {
     );
   return (
     <Grid>
-      <GridElement $gridSlot="nouns">{wordStats.nounCount}</GridElement>
-      <GridElement $gridSlot="adverbs">{wordStats.adverbCount}</GridElement>
-      <GridElement $gridSlot="verbs">{wordStats.verbCount}</GridElement>
-      <GridElement $gridSlot="adjectives">{wordStats.adjectiveCount}</GridElement>
-      <FullWidthGridElement>{wordStats.commonExpressionCount}</FullWidthGridElement>
+      <GridElement navigateTo="NOUN" $gridSlot="nouns">
+        {wordStats.nounCount}
+      </GridElement>
+      <GridElement navigateTo="ADVERB" $gridSlot="adverbs">
+        {wordStats.adverbCount}
+      </GridElement>
+      <GridElement navigateTo="VERB" $gridSlot="verbs">
+        {wordStats.verbCount}
+      </GridElement>
+      <GridElement navigateTo="ADJECTIVE" $gridSlot="adjectives">
+        {wordStats.adjectiveCount}
+      </GridElement>
+      <FullWidthGridElement navigateTo="COMMON_EXPRESSION">{wordStats.commonExpressionCount}</FullWidthGridElement>
     </Grid>
   );
 }

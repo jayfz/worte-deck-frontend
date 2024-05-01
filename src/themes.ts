@@ -25,6 +25,7 @@ export type ApplicationTheme = {
 
   sortingPillBackgroundHighlated: string;
   sortingPillBorderHighlited: string;
+  formInputText: string;
 };
 
 export const lightTheme: ApplicationTheme = {
@@ -53,6 +54,7 @@ export const lightTheme: ApplicationTheme = {
   ColoredStatPanelText: 'white',
   sortingPillBackgroundHighlated: 'white',
   sortingPillBorderHighlited: '#3D4650',
+  formInputText: '#6F7C8A',
 };
 
 export const darkTheme: ApplicationTheme = {
@@ -82,4 +84,5 @@ export const darkTheme: ApplicationTheme = {
   ColoredStatPanelText: 'white',
   sortingPillBackgroundHighlated: '#1D3246',
   sortingPillBorderHighlited: '#F0F0F0',
+  formInputText: '#9BB1C8',
 };

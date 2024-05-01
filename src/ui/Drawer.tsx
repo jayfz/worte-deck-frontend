@@ -20,7 +20,7 @@ const DrawerOverlay = styled.div<{ $isVisible: boolean }>`
   backdrop-filter: blur(2px);
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   transform: ${(props) => (!props.$isVisible ? 'translate(-100%)' : 'translate(0%)')};
   transition: transform 0.25s ease-out;
   z-index: 1000;
