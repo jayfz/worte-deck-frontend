@@ -6,7 +6,7 @@ import { Adjective, BaseWord, NounGender, Word, WordType } from '@/types/domainT
 import { Button } from '@/ui/Button';
 import { Flex } from '@/ui/Flex';
 import PageTitle from '@/ui/PageTitle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const PageContainer = styled(Flex.Column)`
@@ -213,9 +213,21 @@ function AddVerbForm(props: AddVerbFormProps) {
   );
 }
 
-const WordOptionItem = styled.li``;
+const WordOptionItem = styled.li`
+  border: 1px solid ${(props) => props.theme.borderColor};
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  text-transform: capitalize;
+`;
 
-const WordOptions = styled.ul``;
+const WordOptions = styled.ul`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-wrap: break-word;
+  gap: 0.5rem;
+`;
 
 type MutateWordPage = {
   action: 'create' | 'update';
@@ -242,7 +254,7 @@ export default function AddWordPage(props: MutateWordPage) {
   const [showWordOptions, setShowWordOptions] = useState<boolean>(false);
   const { dictionaryWords, isPendingDictionaryWords } = useDictionaryWords(word, props.action);
   const { knownWords, isPendingKnownWords } = useKnownWords(word, props.action);
-  const { createWord, isCreatingWord } = useCreateWord();
+  const { createWord, isCreatingWord, createdWord } = useCreateWord();
   const { updateWord, isUpdatingWord } = useUpdateWord();
 
   const onSpanSelectorClick = (wordFragment: string) => {
@@ -263,7 +275,7 @@ export default function AddWordPage(props: MutateWordPage) {
     setGermanExample(dictionaryWord.germanExample || '');
     setEnglishExample(dictionaryWord.englishExample || '');
     setMatches(new Set(dictionaryWord.matches));
-    setId(dictionaryWord.id);
+    setId(props.action == 'create' ? -1 : dictionaryWord.id);
     setReady(dictionaryWord.isReady);
     if (dictionaryWord.type == 'NOUN') {
       setNounGender(dictionaryWord.gender || null);
@@ -324,9 +336,14 @@ export default function AddWordPage(props: MutateWordPage) {
     }
 
     if (props.action == 'update') {
+      if (id == -1) return;
       updateWord({ word: wordToCreate, wordId: id });
     }
   };
+
+  useEffect(() => {
+    setId(createdWord?.id || -1);
+  }, [createdWord]);
 
   return (
     <PageContainer>
